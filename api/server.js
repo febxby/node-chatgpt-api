@@ -8,23 +8,26 @@ import { KeyvFile } from 'keyv-file';
 import ChatGPTClient from '../src/ChatGPTClient.js';
 import ChatGPTBrowserClient from '../src/ChatGPTBrowserClient.js';
 import BingAIClient from '../src/BingAIClient.js';
+import fstatic from '@fastify/static';
+import path from 'node:path';
+import { fileURLToPath } from "url";
+import settings from '../settings.js';
+// const arg = process.argv.find(_arg => _arg.startsWith('--settings'));
+// const path = arg?.split('=')[1] ?? './settings.js';
 
-const arg = process.argv.find(_arg => _arg.startsWith('--settings'));
-const path = arg?.split('=')[1] ?? './settings.js';
-
-let settings;
-if (fs.existsSync(path)) {
-    // get the full path
-    const fullPath = fs.realpathSync(path);
-    settings = (await import(pathToFileURL(fullPath).toString())).default;
-} else {
-    if (arg) {
-        console.error('Error: the file specified by the --settings parameter does not exist.');
-    } else {
-        console.error('Error: the settings.js file does not exist.');
-    }
-    process.exit(1);
-}
+// let settings;
+// if (fs.existsSync(path)) {
+//     // get the full path
+//     const fullPath = fs.realpathSync(path);
+//     settings = (await import(pathToFileURL(fullPath).toString())).default;
+// } else {
+//     if (arg) {
+//         console.error('Error: the file specified by the --settings parameter does not exist.');
+//     } else {
+//         console.error('Error: the settings.js file does not exist.');
+//     }
+//     process.exit(1);
+// }
 
 if (settings.storageFilePath && !settings.cacheOptions.store) {
     // make the directory and file if they don't exist
@@ -47,6 +50,11 @@ const server = fastify();
 await server.register(FastifySSEPlugin);
 await server.register(cors, {
     origin: '*',
+});
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+await server.register(fstatic, {
+    root: path.join(__dirname, '../public'),
 });
 
 server.get('/ping', () => Date.now().toString());

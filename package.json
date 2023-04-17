@@ -2,7 +2,7 @@
   "name": "@waylaidwanderer/chatgpt-api",
   "version": "1.35.0",
   "description": "A ChatGPT implementation using the official ChatGPT model via OpenAI's API.",
-  "main": "index.js",
+  "main": "api/server.js",
   "bin": {
     "chatgpt-api": "bin/server.js",
     "chatgpt-cli": "bin/cli.js"
@@ -56,7 +56,10 @@
     "keyv-file": "^0.2.0",
     "ora": "^6.1.2",
     "undici": "^5.20.0",
-    "ws": "^8.12.0"
+    "ws": "^8.12.0",
+    "@fastify/static": "^6.9.0",
+    "@vercel/node": "^2.10.3",
+    "vercel": "^28.18.4"
   },
   "devDependencies": {
     "@keyv/redis": "^2.5.6",
